@@ -1,38 +1,38 @@
 package com.job.expectation.models.requests;
 
 public class SalaryExpectationRequestModel {
-    private Double NetSalaryAmount;
-    private Double TotalAllowanceAmount;
+    private Double BasicSalary;
+    private Double TotalAllowance;
 
     public SalaryExpectationRequestModel() {
     }
 
-    public SalaryExpectationRequestModel(Double netSalaryAmount, Double totalAllowanceAmount) {
-        NetSalaryAmount = netSalaryAmount;
-        TotalAllowanceAmount = totalAllowanceAmount;
+    public SalaryExpectationRequestModel(Double basicSalary, Double totalAllowance) {
+        BasicSalary = basicSalary;
+        TotalAllowance = totalAllowance;
     }
 
-    public Double getNetSalaryAmount() {
-        return NetSalaryAmount;
+    public Double getBasicSalary() {
+        return BasicSalary;
     }
 
-    public void setNetSalaryAmount(Double netSalaryAmount) {
-        NetSalaryAmount = netSalaryAmount;
+    public void setBasicSalary(Double basicSalary) {
+        BasicSalary = basicSalary;
     }
 
-    public Double getTotalAllowanceAmount() {
-        return TotalAllowanceAmount;
+    public Double getTotalAllowance() {
+        return TotalAllowance;
     }
 
-    public void setTotalAllowanceAmount(Double totalAllowanceAmount) {
-        TotalAllowanceAmount = totalAllowanceAmount;
+    public void setTotalAllowance(Double totalAllowance) {
+        TotalAllowance = totalAllowance;
     }
 
     @Override
     public String toString() {
         return "SalaryExpectationRequestModel{" +
-                "NetSalaryAmount=" + NetSalaryAmount +
-                ", TotalAllowanceAmount=" + TotalAllowanceAmount +
+                "BasicSalary=" + BasicSalary +
+                ", TotalAllowance=" + TotalAllowance +
                 '}';
     }
 }

@@ -4,6 +4,7 @@ import com.job.expectation.models.*;
 import com.job.expectation.models.requests.SalaryExpectationRequestModel;
 import com.job.expectation.repositories.SalaryExpectationRepository;
 
+import com.sun.jdi.DoubleValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
@@ -13,92 +14,81 @@ import javax.validation.Valid;
 
 @Repository
 public class SalaryExpectationService implements SalaryExpectationRepository {
-    public ResponseEntity<ResponseTierDataModel> salaryExpectationDetails(@Valid SalaryExpectationRequestModel salaryExpectationRequestModel) {
+    public ResponseEntity<SalaryDetails> salaryExpectationDetails(@Valid SalaryExpectationRequestModel salaryExpectationRequestModel) {
 
-        Double salary = salaryExpectationRequestModel.getNetSalaryAmount();
-        Double allowance = salaryExpectationRequestModel.getTotalAllowanceAmount();
+        Double basicSalary = salaryExpectationRequestModel.getBasicSalary();
+        Double totalAllowance = salaryExpectationRequestModel.getTotalAllowance();
 
-        BaseResponseModel baseResponseModel = new BaseResponseModel();
-        ResponseDataModel responseDataModel = new ResponseDataModel();
+        SalaryDetails salaryDetails = new SalaryDetails();
 
-        ResponseTierDataModel responseTierDataModel = new ResponseTierDataModel();
+        Double totalEmployeePensionContribution = this.getTotalEmployeePensionContributionForTier123(basicSalary, 0.00,
+                0.055, 0.05);
 
-
-        // Testing Tier 1
-        Tier tier1 = new Tier();
-        tier1.setEmployeePensionRate(0.00);
-        tier1.setEmployerPensionRate(0.13);
-        tier1.setAllowance(allowance);
-        Double basicSalary_1 = tier1.getBasicSalaryAmount(salary, allowance);
-        tier1.getGrossSalaryAmount(salary, allowance);
-        tier1.getEmployeePensionContribution(basicSalary_1);
-        tier1.getEmployerPensionContribution(basicSalary_1);
-        tier1.getTotalPAYETax(basicSalary_1,allowance);
+        Double totalEmployerPension = this.getTotalEmployeePensionContributionForTier123(basicSalary, 0.13,
+                0.00, 0.05);
 
 
-        // Testing Tier 2
-        Tier tier2 = new Tier();
-        tier2.setEmployeePensionRate(0.055);
-        tier2.setEmployerPensionRate(0.00);
-        tier2.setAllowance(allowance);
-        Double basicSalary_2 = tier1.getBasicSalaryAmount(salary, allowance);
-        tier2.getGrossSalaryAmount(salary, allowance);
-        tier2.getEmployeePensionContribution(basicSalary_2);
-        tier2.getEmployerPensionContribution(basicSalary_2);
-        tier2.getTotalPAYETax(basicSalary_2,allowance);
+        Double totalGrossSalary = salaryDetails.getGrossSalary(basicSalary, totalAllowance, totalEmployerPension, 0.00);
+        System.out.println("totalGrossSalary: " + totalGrossSalary);
+
+        Double newBasicSalary = salaryDetails.getNewBasicSalary(basicSalary, totalEmployeePensionContribution);
+        System.out.println("newBasicSalary: " + newBasicSalary);
+
+        Double TaxableIncome = newBasicSalary + totalAllowance;
+        System.out.println("TaxableIncome: " + TaxableIncome);
+
+        Double taxRate = salaryDetails.getTaxRateFromTaxableIncome(TaxableIncome);
+        System.out.println("taxRate: " + taxRate);
+
+        Double taxAmount = salaryDetails.getTaxAmount(taxRate, TaxableIncome);
+        System.out.println("taxAmount: " + taxAmount);
+
+        Double netSalary = salaryDetails.getNetSalaryAmount(taxAmount, TaxableIncome);
+        System.out.println("netSalary: " + netSalary);
+
+        // Setting response values
+
+        salaryDetails.setPAYE(taxAmount);
+        salaryDetails.setEPC(totalEmployeePensionContribution);
+        salaryDetails.setEP(totalEmployerPension);
+        salaryDetails.setNetSalary(netSalary);
 
 
-
-        // Testing Tier 3
-        Tier tier3 = new Tier();
-        tier3.setEmployeePensionRate(0.05);
-        tier3.setEmployerPensionRate(0.05);
-        tier3.setAllowance(allowance);
-        Double basicSalary_3 = tier3.getBasicSalaryAmount(salary, allowance);
-        tier3.getGrossSalaryAmount(salary, allowance);
-        tier3.getEmployeePensionContribution(basicSalary_3);
-        tier3.getEmployerPensionContribution(basicSalary_3);
-        tier3.getTotalPAYETax(basicSalary_3,allowance);
-
-        responseTierDataModel.setTier1(tier1);
-        responseTierDataModel.setTier2(tier2);
-        responseTierDataModel.setTier3(tier3);
-
-        return new ResponseEntity<>(responseTierDataModel, HttpStatus.OK   );
+        return new ResponseEntity<>(salaryDetails, HttpStatus.OK );
     }
+
+    protected Double getTotalEmployeePensionContributionForTier123(Double basicSalary, Double tierOnePensionRate,
+                                                                Double tierTwoPensionRate, Double tierThreePensionRate)
+    {
+        SalaryDetails salaryDetails = new SalaryDetails();
+
+
+        Double tierOnePensionAmount = salaryDetails.getEmployeePension(basicSalary, tierOnePensionRate);
+
+        Double tierTwoPensionAmount = salaryDetails.getEmployeePension(basicSalary, tierTwoPensionRate);
+
+        Double tierThreePensionAmount = salaryDetails.getEmployeePension(basicSalary, tierThreePensionRate);
+
+        return tierOnePensionAmount + tierTwoPensionAmount + tierThreePensionAmount;
+
+    }
+
+
+    protected Double getTotalEmployerPensionContributionForTier123(Double basicSalary, Double tierOnePensionRate,
+                                                                   Double tierTwoPensionRate, Double tierThreePensionRate)
+    {
+        SalaryDetails salaryDetails = new SalaryDetails();
+
+
+        Double tierOnePensionAmount = salaryDetails.getEmployerPension(basicSalary, tierOnePensionRate);
+
+        Double tierTwoPensionAmount = salaryDetails.getEmployerPension(basicSalary, tierTwoPensionRate);
+
+        Double tierThreePensionAmount = salaryDetails.getEmployerPension(basicSalary, tierThreePensionRate);
+
+        return tierOnePensionAmount + tierTwoPensionAmount + tierThreePensionAmount;
+
+    }
+
 }
-
-
-
-/*
-
-  // Tier 1
-        TierOne tierOne = new TierOne();
-        tierOne.setBasicSalary(salary);
-        tierOne.setAllowance(allowance);
-        tierOne.setGrossSalary(tierOne.getGrossSalaryAmount(salary + allowance));
-
-        // Tier
-        TierTwo tierTwo = new TierTwo();
-        tierTwo.setBasicSalary(salary);
-        tierTwo.setAllowance(allowance);
-        tierTwo.setGrossSalary(tierTwo.getGrossSalaryAmount(salary + allowance));
-
-        TierThree tierThree = new TierThree(); // Tier 3
-        tierThree.setBasicSalary(salary);
-        tierThree.setAllowance(allowance);
-        tierThree.setGrossSalary(tierThree.getGrossSalaryAmount(salary + allowance));
-
-
-
-//        tierTwoModel.setGrossSalary(tierTwoModel.getGrossSalaryAmount(salary + allowance));
-//        tierThreeModel.setGrossSalary(tierThreeModel.getGrossSalaryAmount(salary + allowance));
-
-        responseDataModel.setTier(tier);
-        responseDataModel.setTierOne(tierOne);
-        responseDataModel.setTierTwo(tierTwo);
-        responseDataModel.setTierThree(tierThree);
-
-        baseResponseModel.setData(responseDataModel);
- */
 

@@ -1,8 +1,7 @@
 package com.job.expectation.controllers;
 
 
-import com.job.expectation.models.BaseResponseModel;
-import com.job.expectation.models.ResponseTierDataModel;
+import com.job.expectation.models.SalaryDetails;
 import com.job.expectation.models.requests.SalaryExpectationRequestModel;
 import com.job.expectation.services.SalaryExpectationService;
 import io.swagger.annotations.ApiOperation;
@@ -25,8 +24,8 @@ public class Salary {
     SalaryExpectationService salaryExpectationService;
 
     @PostMapping("/salaryExpectation")
-    @ApiOperation(value = "Testing request body validation", response = ResponseTierDataModel.class )
-    public ResponseEntity<ResponseTierDataModel> getSalaryDetails(@Valid @RequestBody SalaryExpectationRequestModel salaryExpectation) {
+    @ApiOperation(value = "Testing request body validation", response = SalaryDetails.class)
+    public ResponseEntity<SalaryDetails> getSalaryDetails(@Valid @RequestBody SalaryExpectationRequestModel salaryExpectation) {
         return salaryExpectationService.salaryExpectationDetails(salaryExpectation);
     }
 
