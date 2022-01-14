@@ -17,15 +17,20 @@ public class SalaryExpectationService implements SalaryExpectationRepository {
     public ResponseEntity<SalaryDetails> salaryExpectationDetails(@Valid SalaryExpectationRequestModel salaryExpectationRequestModel) {
 
         Double basicSalary = salaryExpectationRequestModel.getBasicSalary();
+        System.out.println("basicSalary: " + basicSalary);
+
         Double totalAllowance = salaryExpectationRequestModel.getTotalAllowance();
+        System.out.println("totalAllowance: " + totalAllowance);
 
         SalaryDetails salaryDetails = new SalaryDetails();
 
         Double totalEmployeePensionContribution = this.getTotalEmployeePensionContributionForTier123(basicSalary, 0.00,
                 0.055, 0.05);
+        System.out.println("totalEmployeePensionContribution: " + totalEmployeePensionContribution);
 
         Double totalEmployerPension = this.getTotalEmployeePensionContributionForTier123(basicSalary, 0.13,
                 0.00, 0.05);
+        System.out.println("totalEmployerPension: " + totalEmployerPension);
 
 
         Double totalGrossSalary = salaryDetails.getGrossSalary(basicSalary, totalAllowance, totalEmployerPension, 0.00);
@@ -52,6 +57,7 @@ public class SalaryExpectationService implements SalaryExpectationRepository {
         salaryDetails.setEPC(totalEmployeePensionContribution);
         salaryDetails.setEP(totalEmployerPension);
         salaryDetails.setNetSalary(netSalary);
+        salaryDetails.setGrossSalary(totalGrossSalary);
 
 
         return new ResponseEntity<>(salaryDetails, HttpStatus.OK );

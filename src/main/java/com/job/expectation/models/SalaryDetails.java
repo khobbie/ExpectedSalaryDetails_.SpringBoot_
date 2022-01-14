@@ -5,19 +5,18 @@ public class SalaryDetails {
     private Double PAYE = 0.00; // Pay As You Earn
     private Double EPC = 0.00;  // Employee Pension Contribution
     private Double EP = 0.00;   // Employer Pension
-    private Double NetSalary = 0.00; //Net Salary
-
-
+    private Double NetSalary = 0.00; // Net Salary
+    private Double GrossSalary = 0.00; // Gross Salary
 
     public SalaryDetails() {
-
     }
 
-    public SalaryDetails(Double PAYE, Double EPC, Double EP, Double netSalary) {
+    public SalaryDetails(Double PAYE, Double EPC, Double EP, Double netSalary, Double grossSalary) {
         this.PAYE = PAYE;
         this.EPC = EPC;
         this.EP = EP;
         NetSalary = netSalary;
+        GrossSalary = grossSalary;
     }
 
     public Double getPAYE() {
@@ -52,6 +51,14 @@ public class SalaryDetails {
         NetSalary = netSalary;
     }
 
+    public Double getGrossSalary() {
+        return GrossSalary;
+    }
+
+    public void setGrossSalary(Double grossSalary) {
+        GrossSalary = grossSalary;
+    }
+
     @Override
     public String toString() {
         return "SalaryDetails{" +
@@ -59,10 +66,9 @@ public class SalaryDetails {
                 ", EPC=" + EPC +
                 ", EP=" + EP +
                 ", NetSalary=" + NetSalary +
+                ", GrossSalary=" + GrossSalary +
                 '}';
     }
-
-
 
     /*
         Custom Functions
@@ -89,7 +95,7 @@ public class SalaryDetails {
         if (TaxableIncome <= 280) {
             taxRate = 0.00;
         } else if (TaxableIncome > 280 && NetSalary <= 388) {
-            taxRate = 0.5;
+            taxRate = 0.05;
         } else if (TaxableIncome > 388 && NetSalary <= 528) {
             taxRate = 0.10;
         } else if (TaxableIncome > 528 && NetSalary <= 3528) {
