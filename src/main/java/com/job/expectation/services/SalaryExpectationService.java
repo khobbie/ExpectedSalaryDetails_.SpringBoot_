@@ -42,7 +42,8 @@ public class SalaryExpectationService implements SalaryExpectationRepository {
         Double TaxableIncome = newBasicSalary + totalAllowance;
         System.out.println("TaxableIncome: " + TaxableIncome);
 
-        Double taxRate = salaryDetails.getTaxRateFromTaxableIncome(TaxableIncome);
+         Double taxRate = salaryDetails.getTaxRateFromTaxableIncome(TaxableIncome);
+        // Double taxRate = salaryDetails.getTaxRateFromTaxableIncome(2790.0);
         System.out.println("taxRate: " + taxRate);
 
         Double taxAmount = salaryDetails.getTaxAmount(taxRate, TaxableIncome);

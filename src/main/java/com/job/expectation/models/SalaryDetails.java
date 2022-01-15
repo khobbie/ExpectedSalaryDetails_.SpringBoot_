@@ -90,15 +90,17 @@ public class SalaryDetails {
     // ** Tax Rate ** //
     public Double getTaxRateFromTaxableIncome(Double TaxableIncome)
     {
+
+
         Double taxRate = 0.00;
 
         if (TaxableIncome <= 280) {
             taxRate = 0.00;
-        } else if (TaxableIncome > 280 && NetSalary <= 388) {
+        } else if (TaxableIncome > 280 && TaxableIncome <= 388) {
             taxRate = 0.05;
-        } else if (TaxableIncome > 388 && NetSalary <= 528) {
+        } else if (TaxableIncome > 388 && TaxableIncome <= 528) {
             taxRate = 0.10;
-        } else if (TaxableIncome > 528 && NetSalary <= 3528) {
+        } else if (TaxableIncome > 528 && TaxableIncome <= 3528) {
             taxRate = 0.175;
         } else {
             taxRate = 0.25;
